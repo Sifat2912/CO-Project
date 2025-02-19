@@ -186,12 +186,10 @@ def processIType(instructionList, pc): # Saksham
     if not (-2048 <= immediate <= 2047):
         return "", False
 
-
     signedImmediate = format(immediate, f'012b') if immediate>=0 else format((1 << 12) + immediate, f'012b')
     
     return (signedImmediate + registerAddress[rs1] + instructions["I-Type"][instruction]["funct3"] + registerAddress[rd] + instructions["I-Type"][instruction]["opcode"] + "\n",
             True)
-
 
 def processSType(instructionList, pc): # Yash
     # 4 args in the list
@@ -203,11 +201,9 @@ def processSType(instructionList, pc): # Yash
     immediate = instructionList[2].split("(")[0]
     sp = instructionList[2].split("(")[1][:-1]  # base register (rs1)
 
-    
     # check if registers are valid
     if (ra not in registerAddress.keys()) or (sp not in registerAddress.keys()):
         return "", False
-
     
     # convert immediate to integer
     try:
@@ -218,21 +214,7 @@ def processSType(instructionList, pc): # Yash
     # immediate range
     if not (-2048 <= immediate <= 2047):
         return "", False
-    
-    # # check memory alignment
-    # try:
-    #     # sw: must be word aligned (multiple of 4)
-    #     if instruction == "sw" and (immediate % 4 != 0):
-    #         return "", False  
-        
-    #     # sh: must be halfword aligned (multiple of 2)
-    #     if instruction == "sh" and (immediate % 2 != 0):
-    #         return "", False
 
-    #     0/0
-    # except ZeroDivisionError:
-    #     pass  # successfull
-    
     # extract upper 7 bits of immediate (bits 11:5)
     immediate_upper = (immediate >> 5) & 0x7F
 
@@ -253,7 +235,6 @@ def processSType(instructionList, pc): # Yash
         '\n',  
         True
     )
-   
 
 def processBType(instructionList, labels, pc): # Sanchit
     if (len(instructionList) != 4 or instructionList[1] not in set(registerAddress.keys()) or instructionList[2] not in set(registerAddress.keys())):
@@ -277,7 +258,6 @@ def processBType(instructionList, labels, pc): # Sanchit
     # immediate to 12-bit binary
     imm_binary = format(imm, '012b') if imm >= 0 else format(imm & 0x1FFF, '012b')
 
-
     imm_12 = imm_binary[0]  # imm[12]
     imm_10_5 = imm_binary[-10:-4]  # imm[10:5]
     imm_4_1 = imm_binary[-4:]  # imm[4:1]
@@ -289,7 +269,6 @@ def processBType(instructionList, labels, pc): # Sanchit
     opcode = instructions["B-Type"][instruction]["opcode"]
     funct3 = instructions["B-Type"][instruction]["funct3"]
     
-
     return (  imm_12_10_5 
             + registerAddress[rs2] 
             + registerAddress[rs1] 
@@ -298,8 +277,6 @@ def processBType(instructionList, labels, pc): # Sanchit
             + opcode
             + "\n", True
     )
-
-
 
 def processJType(instructionList, labels, pc): # Yash
     # 3 args in the list
@@ -323,8 +300,6 @@ def processJType(instructionList, labels, pc): # Yash
 
     # immediate value
     try:
-        # immediate = (int(immediate))//2
-
         # value out of range
         if not (-(2)**20 <= immediate <= 2**20-1):
             int("")
@@ -343,7 +318,6 @@ def processJType(instructionList, labels, pc): # Yash
         + instructions["J-Type"][instruction]["opcode"] + '\n',
         True
     )
-
 
 if __name__ == "__main__":
     main()
