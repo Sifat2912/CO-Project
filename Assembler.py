@@ -35,11 +35,6 @@ registerAddress = {"zero" : "00000",
                    "t6" : "11111"}
 
 # Dictionary containing instruction codes as strings
-"""
-Exclusions -> I type : slli
-                       srli
-                       srai 
-"""
 instructions = {"R-Type" : {"add" : {"opcode" : "0110011", 
                                      "funct3" : "000", 
                                      "funct7" : "0000000"},
@@ -55,54 +50,19 @@ instructions = {"R-Type" : {"add" : {"opcode" : "0110011",
                             "or" : {"opcode"  : "0110011", 
                                      "funct3" : "110", 
                                      "funct7" : "0000000"},
-                            "xor" : {"opcode" : "0110011", 
-                                     "funct3" : "100", 
-                                     "funct7" : "0000000"},
                             "and" : {"opcode" : "0110011", 
                                      "funct3" : "111", 
-                                     "funct7" : "0000000"},
-                            "sll" : {"opcode" : "0110011", 
-                                     "funct3" : "001", 
-                                     "funct7" : "0000000"},
-                            "sra" : {"opcode" : "0110011", 
-                                     "funct3" : "101", 
-                                     "funct7" : "0100000"},
-                            "sltu" : {"opcode": "0110011", 
-                                     "funct3" : "011", 
                                      "funct7" : "0000000"}
                             },
-
                 "I-Type" : {"addi" : {"opcode" : "0010011", 
                                       "funct3" : "000"},
-                            "xori" : {"opcode" : "0010011", 
-                                      "funct3" : "100"},
-                            "ori" : {"opcode" : "0010011", 
-                                     "funct3" : "110"},
-                            "andi" : {"opcode" : "0010011", 
-                                      "funct3" : "111"},
-                            "slti" : {"opcode" : "0010011", 
-                                      "funct3" : "010"},
-                            "sltiu" : {"opcode" : "0010011", 
-                                      "funct3" : "011"},
-                            "lb" : {"opcode" : "0000011", 
-                                     "funct3" : "000"},
-                            "lh" : {"opcode" : "0000011", 
-                                     "funct3" : "001"},
                             "lw" : {"opcode" : "0000011", 
                                      "funct3" : "010"},
-                            "lbu" : {"opcode" : "0000011", 
-                                     "funct3" : "100"},
-                            "lhu" : {"opcode" : "0000011", 
-                                     "funct3" : "101"},
                             "jalr" : {"opcode" : "1100111", 
                                      "funct3" : "000"}
                             },
 
-                "S-Type" : {"sb" : {"opcode" : "0100011", 
-                                    "funct3" : "000"},
-                            "sh" : {"opcode" : "0100011", 
-                                    "funct3" : "001"},
-                            "sw" : {"opcode" : "0100011", 
+                "S-Type" : {"sw" : {"opcode" : "0100011", 
                                     "funct3" : "010"}
                            },
 
@@ -111,13 +71,7 @@ instructions = {"R-Type" : {"add" : {"opcode" : "0110011",
                             "bne" : {"opcode" : "1100011", 
                                     "funct3" : "001"},
                             "blt" : {"opcode" : "1100011", 
-                                    "funct3" : "100"},
-                            "bge" : {"opcode" : "1100011", 
-                                    "funct3" : "101"},
-                            "bltu" : {"opcode" : "1100011", 
-                                    "funct3" : "110"},
-                            "bgeu" : {"opcode" : "1100011", 
-                                    "funct3" : "111"},
+                                    "funct3" : "100"}
                             },
 
                 "J-Type" : {"jal" : {"opcode" : "1101111"}
@@ -151,9 +105,6 @@ def main():
             f.write(outputString[:-1])
     else:
         print(outputString)
-
-
-     
 
 #_____________________________________________________________________________________________________
 # Functions
@@ -192,16 +143,13 @@ def process(instruction, labels, pc):
         return processBType(instruction, labels, pc)
     elif (instruction[0] in set(instructions["J-Type"].keys())):
         return processJType(instruction, labels, pc)
-    # elif (instruction[0] in set(instructions["U-Type"].keys())):
-    #     return processUType(instruction)
     else:
         return "", False
 
-
-
+# Different processes
 def processRType(instructionList, pc): # Sifat
     if (len(instructionList) != 4 or instructionList[1] not in set(registerAddress.keys()) or instructionList[2] not in set(registerAddress.keys()) or instructionList[3] not in set(registerAddress.keys())):
-        return "", False, pc+4
+        return "", False
     
     instruction = instructionList[0]
     rd = instructionList[1]
@@ -211,11 +159,6 @@ def processRType(instructionList, pc): # Sifat
     funct3 = instructions["R-Type"][instruction]["funct3"]
     funct7 = instructions["R-Type"][instruction]["funct7"]
     return funct7 + registerAddress[rs2] + registerAddress[rs1] + funct3 + registerAddress[rd] + opcode + "\n", True
-    return funct7 + 2*"\t" + registerAddress[rs2] + 2*"\t"+ registerAddress[rs1]+ 2*"\t" + funct3 + 2*"\t"+ registerAddress[rd] + 2*"\t"+ opcode + "\n", True, 4
-
-
-# Input format: instruction -> list registers and immediates
-#               labels -> dictionary with label as key and instruction serial number as value (instruction numbers start from 1) 
 
 def processIType(instructionList, pc): # Saksham
     if len(instructionList) != 3 and len(instructionList) != 4:
@@ -404,4 +347,3 @@ def processJType(instructionList, labels, pc): # Yash
 
 if __name__ == "__main__":
     main()
-    #test
