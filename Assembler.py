@@ -124,7 +124,6 @@ instructions = {"R-Type" : {"add" : {"opcode" : "0110011",
                             }
                 }
 
-#_____________________________________________________________________________________________________
 # Main Function
 def main():
     inputFile = sys.argv[-2]
@@ -405,3 +404,4 @@ def processJType(instructionList, labels, pc): # Yash
 
 if __name__ == "__main__":
     main()
+    #test
