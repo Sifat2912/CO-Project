@@ -78,13 +78,16 @@ instructions = {"R-Type" : {"add" : {"opcode" : "0110011",
                             }
                 }
 
-#____________________________________________________________________________________________________
 # Main Function
 def main():
     inputFile = sys.argv[-2]
     outputFile = sys.argv[-1]
-    inputInstructions, labels = inputTextFile(rf"{inputFile}")
+    inputInstructions, labels, f = inputTextFile(rf"{inputFile}")
     
+    if not f:
+        print("Error in labels")
+        return
+
     outputString = ""
     pc = 0
     for number, instruction in list(inputInstructions.items()):
@@ -121,16 +124,19 @@ def inputTextFile(location):
     instructionNumber = 1
     for line in lines:
         if len(line.split(":")) == 2:
-            labels[line.split(":")[0]] = (instructionNumber-1)*4
-            i = line.split(":")[1].strip()
-            instructions[instructionNumber] = i.split(" ")[:1] + i.split(" ")[1].split(",")
+            if line.split(":")[0] not in labels.keys():
+                labels[line.split(":")[0]] = (instructionNumber-1)*4
+                i = line.split(":")[1].strip()
+                instructions[instructionNumber] = i.split(" ")[:1] + i.split(" ")[1].split(",")
+            else:
+                return instructions, labels, False
         elif len(line.split(" ")) > 1:
             instructions[instructionNumber] = line.split(" ")[:1] + line.split(" ")[1].split(",")
         else:
             instructions[instructionNumber] = -1
         instructionNumber += 1
 
-    return instructions, labels
+    return instructions, labels, True
 
 # Funtcion which first identifies type of instruction and then hands it over to specific type function
 def process(instruction, labels, pc):
